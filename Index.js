@@ -73,4 +73,26 @@ client.on('messageCreate', async (message) => {
       .setThumbnail(data.image)
       .addFields(
         { name: 'Market Cap', value: formatNum(data.mc), inline: true },
-        { name: 'Liquidity', value:
+        { name: 'Liquidity', value: formatNum(data.liquidity), inline: true },
+        { name: 'Volume 24h', value: formatNum(data.volume24h), inline: true },
+        { name: 'Price', value: data.price ? `$${Number(data.price).toFixed(6)}` : 'N/A', inline: true },
+        { name: 'Age', value: data.age, inline: true },
+        { name: 'Holders', value: data.holders, inline: true }
+      )
+      .setTimestamp();
+
+    const links = [];
+    if (data.url) links.push(`[DexScreener](${data.url})`);
+    if (data.website) links.push(`[Website](${data.website})`);
+    if (data.twitter) links.push(`[X](${data.twitter})`);
+    if (links.length) embed.addFields({ name: 'Links', value: links.join(' • ') });
+
+    await message.reply({ embeds: [embed] });
+  }
+});
+
+client.once('ready', () => {
+  console.log(`Logged in as ${client.user.tag}`);
+});
+
+client.login(process.env.DISCORD_TOKEN);
